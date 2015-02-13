@@ -3,25 +3,36 @@
 #Paolo Frias
 #Due: 02/17/1992
 
+import sys
+
 
 def main():
+    CONST_OFFSET = 64
+    ######
+    sys.argv = [sys.argv[0], 'inputTextFile.txt', 'Breadth', 'A', 'K', 'outputFile.txt']
+    ######
+
+    startNode = ord(sys.argv[3]) - CONST_OFFSET - 1
+    endNode = ord(sys.argv[4]) - CONST_OFFSET - 1
     masterList = list()
     
     #Input redirection
-    file = open("inputTextFile.txt", "r")
+    file = open(sys.argv[1], "r")
     for line in file:
         for word in line.split(" "):
             masterList.append(word.rstrip())
 
     matrix = createMatrix(masterList)
 
-    #Breadth First Search
-    doBFS(0, 10, matrix)
+    if sys.argv[2] == 'Breadth':
+        doBFS(startNode, endNode, matrix)
+
     
             
 def createMatrix(_list):
-    largest = 0
     CONST_OFFSET = 64
+    largest = 0
+
     
     #create empty graph matrix of appropriate girth
     for idx, val in enumerate(_list):
@@ -50,8 +61,11 @@ def printMatrix(matrix):
     for stuff in matrix:
         print(stuff)
 
-def doBFS(start_node, end_node, matrix):
-    print("Starting BFS from " + str(start_node) + " to " + str(end_node))
+def doBFS(startNode, endNode, matrix):
+    print("Starting BFS from " + str(startNode) + " to " + str(endNode))
+    for i, weight in enumerate(matrix[startNode]):
+        if int(weight) > 0:
+            print (startNode, ' is connected to ', i)
 
     
 main()
