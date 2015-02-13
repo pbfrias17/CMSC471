@@ -30,6 +30,7 @@ def main():
     path.reverse()
     for node in path:
         print(chr(node + CONST_OFFSET + 1))
+
             
 def createMatrix(_list):
     CONST_OFFSET = 64
@@ -59,9 +60,11 @@ def createMatrix(_list):
 
     return matrix
 
+
 def printMatrix(matrix):
     for stuff in matrix:
         print(stuff)
+
 
 def doBFS(startNode, endNode, matrix):
     stopper = 0
