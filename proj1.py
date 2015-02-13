@@ -9,7 +9,7 @@ import sys
 def main():
     CONST_OFFSET = 64
     ######
-    sys.argv = [sys.argv[0], 'inputTextFile.txt', 'Breadth', 'A', 'K', 'outputFile.txt']
+    sys.argv = [sys.argv[0], 'inputTextFile.txt', 'Breadth', 'A', 'G', 'outputFile.txt']
     ######
 
     startNode = ord(sys.argv[3]) - CONST_OFFSET - 1
@@ -25,9 +25,11 @@ def main():
     matrix = createMatrix(masterList)
 
     if sys.argv[2] == 'Breadth':
-        doBFS(startNode, endNode, matrix)
+        path = doBFS(startNode, endNode, matrix)
 
-    
+    path.reverse()
+    for node in path:
+        print(chr(node + CONST_OFFSET + 1))
             
 def createMatrix(_list):
     CONST_OFFSET = 64
@@ -62,11 +64,56 @@ def printMatrix(matrix):
         print(stuff)
 
 def doBFS(startNode, endNode, matrix):
+    stopper = 0
+    
+    parent = [None for i in range(len(matrix[0]))]
+    visited = [False for i in range(len(matrix[0]))]
+    queue = []
+    queue.append(startNode)
+    
     print("Starting BFS from " + str(startNode) + " to " + str(endNode))
-    for i, weight in enumerate(matrix[startNode]):
-        if int(weight) > 0:
-            print (startNode, ' is connected to ', i)
+    #currNode = startNode
+    while not allTrue(visited) and len(queue) != 0:
+        currNode = queue[0]
+        visited[currNode] = True
+        for i, weight in enumerate(matrix[currNode]):
+            if visited[i] == False and i not in queue:
+                if int(weight) > 0:
+                    parent[i] = currNode
+                    queue.append(i)
+                    print (currNode, ' is connected to ', i)
 
+        queue.pop(0)
+        #currNode = queue[0]
+
+        print(visited)
+        print(queue)
+        print(parent)
+        #input("ENTER to go on")
+        print()
+
+    path = []        
+    return getPath(startNode, endNode, parent, path)
+                
+
+def allTrue(_list):
+    for i in _list:
+        if i == False:
+            return False
+
+    print("All nodes have been visited!")
+    return True
+
+
+def getPath(startNode, endNode, parent, path):
+    if endNode == startNode:
+        path.append(startNode)
+        return path
+    else:
+        path.append(endNode)
+        endNode = parent[endNode]
+        return getPath(startNode, endNode, parent, path)
+    
     
 main()
     
