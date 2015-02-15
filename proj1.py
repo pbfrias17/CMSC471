@@ -9,7 +9,7 @@ import sys
 def main():
     CONST_OFFSET = 64
     ######
-    sys.argv = [sys.argv[0], 'inputTextFile.txt', 'Depth', 'A', 'G', 'outputFile.txt']
+    sys.argv = [sys.argv[0], 'inputTextFile.txt', 'Uniform', 'A', 'G', 'outputFile.txt']
     ######
 
     startNode = ord(sys.argv[3]) - CONST_OFFSET - 1
@@ -27,9 +27,15 @@ def main():
     if sys.argv[2] == 'Breadth':
         path = doBFS(startNode, endNode, matrix)
     elif sys.argv[2] == 'Depth':
-        path = doDFS(startNode, endNode, matrix)
+        parents = [startNode]
+        visited = [False for i in range(len(matrix[0]))]
+        path = doDFS(startNode, endNode, matrix, parents, visited)
+        print(path)
+    else:
+        parents = [startNode]
+        visited = [False for i in range(len(matrix[0]))]
+        path = doUCS(startNode, endNode, matrix, parents, visited)
 
-    path.reverse()
     for node in path:
         print(chr(node + CONST_OFFSET + 1))
 
@@ -110,21 +116,54 @@ def allTrue(_list):
     return True
 
 
-def doDFS(startNode, endNode, matrix):
-    print("Starting DFS from " + str(startNode) + " to " + str(endNode))
-
-    return []
-
-
 def getPath(startNode, endNode, parent, path):
     if endNode == startNode:
         path.append(startNode)
+        path.reverse()
         return path
     else:
         path.append(endNode)
         endNode = parent[endNode]
         return getPath(startNode, endNode, parent, path)
+
+
+def doDFS(startNode, endNode, matrix, parents, visited):
+    visited[startNode] = True
     
+    print("Starting DFS from ", startNode, " to ", str(endNode))
+    if endNode == startNode:
+        print("Got to Goal!")
+        print(parents)
+        return parents
+
+    else:
+        vertices = []
+        print(visited)
+        for i, weight in enumerate (matrix[startNode]):
+            if int(weight) > 0 and not visited[i] == True:
+                vertices.append(i)
+                print(startNode, " is connected to ", i)
+
+        if len(vertices) == 0:
+            #This node has no more unvisited connections
+            print("This node has no more unvisited connections, recurDing")
+            parents.pop()
+            startNode = parents[-1]
+            return doDFS(startNode, endNode, matrix, parents, visited)
+            
+        else:
+            vertices.sort()
+            startNode = vertices[-1]
+            parents.append(startNode)
+            print(parents)
+            print("nextNode will be ", startNode)
+            return doDFS(startNode, endNode, matrix, parents, visited)
+
+
+def doUCS(startNode, endNode, matrix, parents, visited):
+    print("Starting UCS from ", startNode, " to ", endNode)
+
+    return [startNode]
     
 main()
     
