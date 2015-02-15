@@ -9,7 +9,7 @@ import sys
 def main():
     CONST_OFFSET = 64
     ######
-    sys.argv = [sys.argv[0], 'inputTextFile.txt', 'Breadth', 'A', 'G', 'outputFile.txt']
+    sys.argv = [sys.argv[0], 'inputTextFile.txt', 'Depth', 'A', 'G', 'outputFile.txt']
     ######
 
     startNode = ord(sys.argv[3]) - CONST_OFFSET - 1
@@ -26,6 +26,8 @@ def main():
 
     if sys.argv[2] == 'Breadth':
         path = doBFS(startNode, endNode, matrix)
+    elif sys.argv[2] == 'Depth':
+        path = doDFS(startNode, endNode, matrix)
 
     path.reverse()
     for node in path:
@@ -106,6 +108,12 @@ def allTrue(_list):
 
     print("All nodes have been visited!")
     return True
+
+
+def doDFS(startNode, endNode, matrix):
+    print("Starting DFS from " + str(startNode) + " to " + str(endNode))
+
+    return []
 
 
 def getPath(startNode, endNode, parent, path):
