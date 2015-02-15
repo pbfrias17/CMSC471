@@ -9,7 +9,7 @@ import sys
 def main():
     CONST_OFFSET = 64
     ######
-    sys.argv = [sys.argv[0], 'inputTextFile.txt', 'Uniform', 'A', 'G', 'outputFile.txt']
+    sys.argv = [sys.argv[0], 'inputTextFile.txt', 'Depth', 'L', 'G', 'outputFile.txt']
     ######
 
     startNode = ord(sys.argv[3]) - CONST_OFFSET - 1
@@ -22,6 +22,7 @@ def main():
         for word in line.split(" "):
             masterList.append(word.rstrip())
 
+    file.close()
     matrix = createMatrix(masterList)
 
     if sys.argv[2] == 'Breadth':
@@ -30,14 +31,18 @@ def main():
         parents = [startNode]
         visited = [False for i in range(len(matrix[0]))]
         path = doDFS(startNode, endNode, matrix, parents, visited)
-        print(path)
     else:
         parents = [startNode]
         visited = [False for i in range(len(matrix[0]))]
-        path = doUCS(startNode, endNode, matrix, parents, visited)
+        path = doUCS(startNode, endNode, matrix)
 
+    outputFile = open("outputTextFile.txt", "w")
     for node in path:
-        print(chr(node + CONST_OFFSET + 1))
+        #print(chr(node + CONST_OFFSET + 1))
+        outputFile.write(chr(node + CONST_OFFSET + 1) + "\n")
+
+    outputFile.close()
+    return 0
 
             
 def createMatrix(_list):
@@ -63,7 +68,7 @@ def createMatrix(_list):
         matrix[_list[x_i]][_list[y_i]] = _list[weight_i]
 
 
-    printMatrix(matrix)
+    #printMatrix(matrix)
 
 
     return matrix
@@ -75,15 +80,12 @@ def printMatrix(matrix):
 
 
 def doBFS(startNode, endNode, matrix):
-    stopper = 0
     
     parent = [None for i in range(len(matrix[0]))]
     visited = [False for i in range(len(matrix[0]))]
     queue = []
     queue.append(startNode)
     
-    print("Starting BFS from " + str(startNode) + " to " + str(endNode))
-    #currNode = startNode
     while not allTrue(visited) and len(queue) != 0:
         currNode = queue[0]
         visited[currNode] = True
@@ -92,16 +94,8 @@ def doBFS(startNode, endNode, matrix):
                 if int(weight) > 0:
                     parent[i] = currNode
                     queue.append(i)
-                    print (currNode, ' is connected to ', i)
 
         queue.pop(0)
-        #currNode = queue[0]
-
-        print(visited)
-        print(queue)
-        print(parent)
-        #input("ENTER to go on")
-        print()
 
     path = []        
     return getPath(startNode, endNode, parent, path)
@@ -111,8 +105,6 @@ def allTrue(_list):
     for i in _list:
         if i == False:
             return False
-
-    print("All nodes have been visited!")
     return True
 
 
@@ -130,23 +122,17 @@ def getPath(startNode, endNode, parent, path):
 def doDFS(startNode, endNode, matrix, parents, visited):
     visited[startNode] = True
     
-    print("Starting DFS from ", startNode, " to ", str(endNode))
     if endNode == startNode:
-        print("Got to Goal!")
-        print(parents)
         return parents
 
     else:
         vertices = []
-        print(visited)
         for i, weight in enumerate (matrix[startNode]):
             if int(weight) > 0 and not visited[i] == True:
                 vertices.append(i)
-                print(startNode, " is connected to ", i)
 
         if len(vertices) == 0:
             #This node has no more unvisited connections
-            print("This node has no more unvisited connections, recurDing")
             parents.pop()
             startNode = parents[-1]
             return doDFS(startNode, endNode, matrix, parents, visited)
@@ -155,15 +141,39 @@ def doDFS(startNode, endNode, matrix, parents, visited):
             vertices.sort()
             startNode = vertices[-1]
             parents.append(startNode)
-            print(parents)
-            print("nextNode will be ", startNode)
             return doDFS(startNode, endNode, matrix, parents, visited)
 
 
-def doUCS(startNode, endNode, matrix, parents, visited):
-    print("Starting UCS from ", startNode, " to ", endNode)
+def doUCS(startNode, endNode, matrix):
+    parent = [None for i in range(len(matrix[0]))]
+    known = [False for i in range(len(matrix[0]))]
+    cost = [None for i in range(len(matrix[0]))]
 
-    return [startNode]
-    
+    currNode = startNode
+    cost[startNode] = 0
+
+    while not known[endNode] == True:
+        known[currNode] = True
+        for i, weight in enumerate(matrix[currNode]):
+            if int(weight) > 0:
+                nodeCost = cost[currNode] + int(weight)
+                if (cost[i] == None or nodeCost < cost[i]):
+                    parent[i] = currNode
+                    cost[i] = nodeCost
+
+        lowestIndex = None
+        lowestCost = None
+        for i, value in enumerate(cost):
+            if not i == startNode and not value == None and not known[i] == True:
+                if lowestIndex == None or value < lowestCost:
+                    lowestIndex = i
+                    lowestCost = value
+
+        currNode = lowestIndex
+
+    path = []
+    return getPath(startNode, endNode, parent, path)
+
+#####################    
 main()
     
