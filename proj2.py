@@ -1,46 +1,61 @@
 
 import math
 import random
+from decimal import *
 
 def main():
-
-    easyVar = [10, -5, 5, 5]
-    medVar = [-4, 9]
+    easyVar = [5, 5, 5, 5]
+    medVar = [-4, 11]
     hardVar = [-10, -8, -6, -4, -2, 0, 2, 4, 6, 8]
     allVar = [easyVar, medVar, hardVar]
     print("Results:")
 
     print("Hill Climbing")
-    HillClimbing(allVar)
-
-
-def HillClimbing(allVar):
     for i in range(3):
-        if i == 0:
-            print("\tEASY")
-        elif i == 1:
-            print("\tMEDIUM")
-        elif i == 2:
-            print("\tHARD")
-
-        runNum = 1
         var = allVar[i]
-        oldResult = HCfunc(var, i)
-        print(oldResult)
-        var = HCstep(var, i, 0) 
-        newResult = HCfunc(var, i)
-        while(oldResult > newResult):
-            stepIndex = runNum % len(var)
-            runNum += 1
-            print("\t", newResult)
-            var = HCstep(var, i, stepIndex) 
-            oldResult = newResult
-            newResult = HCfunc(var, i)
+        #step = Decimal('0.1')
+        step = .1
+        HCmin = HillClimbing(var, i, step)
+        print (HCmin)
+        input()
 
-        if len(var) == 4:
-            #print("\tMin =", oldResult, "@ [", var[0] + 1, ",", var[1] + 1, ",", var[2] + 1, ",", var[3] + 1, "]")
-        if len(var) == 2:
-            print(newResult)
+
+def HillClimbing(var, difficulty, step):
+    base = HCfunc(var, difficulty)
+    HCmin = base + 1 
+    #newVar = VAR
+    resultList = list()
+    index = 0
+    while (index < len(var)):
+        base = HCfunc(var, difficulty)
+        newVar = var[:]
+        newVar[index] -= step
+        print(newVar)
+        result = HCfunc(newVar, difficulty)
+        if result > base:
+            print("\tResult is greater than base!")
+            newVar = var[:]
+            newVar[index] += step
+            #newVar[index] = math.ceil(newVar[index])
+            result = HCfunc(newVar, difficulty)
+            if result > base:
+                print("\tSTILL BIGGER!")
+                index += 1
+                result = base
+                newVar = var[:]
+        var = newVar
+                
+                
+    print(var)
+
+        ##
+
+    HCmin = base
+        ###
+    return HCmin
+        
+
+
 
 def HCfunc(var, num):
     if num == 0:
@@ -50,16 +65,16 @@ def HCfunc(var, num):
     elif num == 2:
         return hard(var)
 
-def HCstep(var, num, index):
-    if num == 0:
-        #easy stepping
-        var[index] -= 1
-        return var
-    if num == 1:
-        #medium stepping
-        for i in range(len(var)):
-            var[i] -= .1
-        return var
+
+def HCstep(oldResult, result, step, index, var, i):
+    newResult = oldResult
+    if oldResult >= result:
+        var[index] += step
+        newResult = HCfunc(var, i)
+    elif oldResult < result:
+        step *= -1
+    
+        
         
     
 def easy(var):
@@ -138,9 +153,6 @@ def hard(var):
         penalty += 1
 
     return penalty
-
-
-
     
 
 
