@@ -5,19 +5,19 @@ from decimal import *
 def main():
     easyVar = [5, 5, 5, 5]
     medVar = [-4, 11]
-    hardVar = [-10, -8, -6, -4, -2, 0, 2, 4, 6, 8]
+    hardVar = [5, 1, 5, 1, 5, 1, 5, 1, 5, 1]
     allVar = [easyVar, medVar, hardVar]
     print("Results:")
 
 
-    num = 0
-    SAmin = SimulatedAnnealing(allVar[0], num)
-    print(SAmin)
+    for i in range(3):
+        SAmin = SimulatedAnnealing(allVar[i], i)
+        print(SAmin)
 
 
 def SimulatedAnnealing(var, num):
-    temp = 1000
-    tempStep = 1
+    temp = 100
+    tempStep = .2
     varStep = 1
     base = GenFunc(var, num)
     #random change to var
@@ -35,7 +35,7 @@ def SimulatedAnnealing(var, num):
         if newVal > base:
             #find probability to accept
             prob = 1000 * round(ProbabilityToAccept(temp, base, newVal), 3)
-            print("p = ", prob)
+            #print("p = ", prob)
             if(random.randint(0, 1000) < prob):
                 base = newVal
                 newVar = hold[:]
@@ -43,11 +43,12 @@ def SimulatedAnnealing(var, num):
         else:
             base = newVal
         temp -= tempStep
-        print(base)
+
+    return base
 
 
 def ProbabilityToAccept(temp, parent, child):
-    print((parent - child) / temp)
+    #print((parent - child) / temp)
     return math.e ** ((parent - child) / temp)
     
     
