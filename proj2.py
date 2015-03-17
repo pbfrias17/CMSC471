@@ -5,8 +5,8 @@ from decimal import *
 
 def main():
     easyVar = [5, 5, 5, 5]
-    medVar = [-4, 11]
-    hardVar = [-10, -8, -6, -4, -2, 0, 2, 4, 6, 8]
+    medVar = [5, 5]
+    hardVar = [-3, 5, 5, 5, 5, 5, 5, 5, 5, -3]
     allVar = [easyVar, medVar, hardVar]
     print("Results:")
 
@@ -16,30 +16,35 @@ def main():
         #step = Decimal('0.1')
         step = .1
         HCmin = HillClimbing(var, i, step)
-        print (HCmin)
-        input()
+        print ("Minimum found to be", HCmin)
+
+    print()
+    print()
+    print("Simulated Annealing")
 
 
 def HillClimbing(var, difficulty, step):
-    base = HCfunc(var, difficulty)
-    HCmin = base + 1 
-    #newVar = VAR
+    base = HCfunc(var, difficulty) 
     resultList = list()
     index = 0
     while (index < len(var)):
+        print(var)
         base = HCfunc(var, difficulty)
+        print("\tbase = ", base)
         newVar = var[:]
         newVar[index] -= step
         print(newVar)
         result = HCfunc(newVar, difficulty)
+        print("\tresult = ", result)
         if result > base:
-            print("\tResult is greater than base!")
+            print("\tresult is bigger than base")
             newVar = var[:]
             newVar[index] += step
+            print(newVar)
             #newVar[index] = math.ceil(newVar[index])
             result = HCfunc(newVar, difficulty)
-            if result > base:
-                print("\tSTILL BIGGER!")
+            if result >= base:
+                print("\t\tresult = ", result)
                 index += 1
                 result = base
                 newVar = var[:]
@@ -47,14 +52,9 @@ def HillClimbing(var, difficulty, step):
                 
                 
     print(var)
-
-        ##
-
     HCmin = base
-        ###
-    return HCmin
-        
 
+    return HCmin
 
 
 def HCfunc(var, num):
@@ -66,15 +66,13 @@ def HCfunc(var, num):
         return hard(var)
 
 
-def HCstep(oldResult, result, step, index, var, i):
-    newResult = oldResult
-    if oldResult >= result:
-        var[index] += step
-        newResult = HCfunc(var, i)
-    elif oldResult < result:
-        step *= -1
+def SimulatedAnnealing(var, difficulty, step):
     
-        
+    Temp = 100
+    
+
+    SAmin = 10
+    return SAmin
         
     
 def easy(var):
