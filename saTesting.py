@@ -16,16 +16,16 @@ def main():
 
 
 def SimulatedAnnealing(var, num):
-    temp = 100
-    tempStep = .1
-    varStep = .5
+    temp = 1000
+    tempStep = 1
+    varStep = 1
     base = GenFunc(var, num)
     #random change to var
     newVar = var[:]
-    while temp != 0:
+    while temp > 0:
+        hold = newVar[:]
         randIncr = random.randint(1, 2)
         randIndex = random.randint(0, len(var)-1)
-        print(randIncr, randIndex)
         if randIncr == 1:
             newVar[randIndex] -= varStep
         else:
@@ -34,14 +34,20 @@ def SimulatedAnnealing(var, num):
         newVal = GenFunc(newVar, num)
         if newVal > base:
             #find probability to accept
-            ProbabilityToAccept(temp, base, newVal)
+            prob = 1000 * round(ProbabilityToAccept(temp, base, newVal), 3)
+            print("p = ", prob)
+            if(random.randint(0, 1000) < prob):
+                base = newVal
+                newVar = hold[:]
             
         else:
             base = newVal
         temp -= tempStep
+        print(base)
 
 
 def ProbabilityToAccept(temp, parent, child):
+    print((parent - child) / temp)
     return math.e ** ((parent - child) / temp)
     
     
