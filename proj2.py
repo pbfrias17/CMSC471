@@ -8,7 +8,8 @@ def main():
     medVar = [5, 5]
     hardVar = [-3, 5, 5, 5, 5, 5, 5, 5, 5, -3]
     allVar = [easyVar, medVar, hardVar]
-    print("Results:")
+    print("RESULTS:")
+    print()
 
     print("Hill Climbing")
     for i in range(3):
@@ -19,45 +20,73 @@ def main():
         print ("Minimum found to be", HCmin)
 
     print()
-    print()
     print("Simulated Annealing")
+    for i in range(3):
+        SAmin = SimulatedAnnealing(allVar[i], i)
+        print("Minimum found to be" , SAmin)
 
 
 def HillClimbing(var, difficulty, step):
-    base = HCfunc(var, difficulty) 
+    base = GenFunc(var, difficulty) 
     resultList = list()
     index = 0
     while (index < len(var)):
-        print(var)
-        base = HCfunc(var, difficulty)
-        print("\tbase = ", base)
+        base = GenFunc(var, difficulty)
         newVar = var[:]
         newVar[index] -= step
-        print(newVar)
-        result = HCfunc(newVar, difficulty)
-        print("\tresult = ", result)
+        result = GenFunc(newVar, difficulty)
+
         if result > base:
-            print("\tresult is bigger than base")
             newVar = var[:]
             newVar[index] += step
-            print(newVar)
-            #newVar[index] = math.ceil(newVar[index])
-            result = HCfunc(newVar, difficulty)
+            result = GenFunc(newVar, difficulty)
             if result >= base:
-                print("\t\tresult = ", result)
                 index += 1
                 result = base
                 newVar = var[:]
         var = newVar
                 
-                
-    print(var)
     HCmin = base
 
     return HCmin
 
 
-def HCfunc(var, num):
+def SimulatedAnnealing(var, num):
+    temp = 100
+    tempStep = .2
+    varStep = 1
+    base = GenFunc(var, num)
+    newVar = var[:]
+    while temp > 0:
+        hold = newVar[:]
+        randIncr = random.randint(1, 2)
+        randIndex = random.randint(0, len(var)-1)
+        if randIncr == 1:
+            newVar[randIndex] -= varStep
+        else:
+            newVar[randIndex] += varStep
+
+        newVal = GenFunc(newVar, num)
+        if newVal > base:
+            #find probability to accept
+            prob = 1000 * round(ProbabilityToAccept(temp, base, newVal), 3)
+            if(random.randint(0, 1000) < prob):
+                base = newVal
+                newVar = hold[:]
+            
+        else:
+            base = newVal
+        temp -= tempStep
+
+    return base
+
+
+def ProbabilityToAccept(temp, parent, child):
+    return math.e ** ((parent - child) / temp)
+        
+    
+
+def GenFunc(var, num):
     if num == 0:
         return easy(var)
     elif num == 1:
@@ -66,15 +95,7 @@ def HCfunc(var, num):
         return hard(var)
 
 
-def SimulatedAnnealing(var, difficulty, step):
-    
-    Temp = 100
-    
 
-    SAmin = 10
-    return SAmin
-        
-    
 def easy(var):
     x = var[0]
     y = var[1]
