@@ -17,13 +17,19 @@ def main():
         #step = Decimal('0.1')
         step = .1
         HCmin = HillClimbing(var, i, step)
-        print ("Minimum found to be", HCmin)
+        print ("Min found =", HCmin)
 
     print()
     print("Simulated Annealing")
     for i in range(3):
         SAmin = SimulatedAnnealing(allVar[i], i)
-        print("Minimum found to be" , SAmin)
+        print("Min found =", SAmin)
+
+    print()
+    print("Genetic Search")
+    for i in range(3):
+        GSmin = GeneticSearch(allVar[i], i)
+        print("Min found =", GSmin)
 
 
 def HillClimbing(var, difficulty, step):
@@ -83,6 +89,39 @@ def SimulatedAnnealing(var, num):
 
 def ProbabilityToAccept(temp, parent, child):
     return math.e ** ((parent - child) / temp)
+
+
+def GeneticSearch(var, num):
+    #basically, start with two identical parents that have
+    # 5 children each, then the best child from each parent
+    # mate twice and that process is repeated.
+    totalGen = 100
+    offspringList = [var, var]
+    while totalGen > 0:
+        totalGen -= 1
+        for i in range(2):
+            result = -100
+            for j in range(5):
+                newVar = offspringList[i][:]
+                randIncr = random.randint(-5, 5)
+                randIndex = random.randint(0, len(var)-1)
+                newVar[randIndex] += randIncr / 2
+                newResult = GenFunc(newVar, num)
+                if result < 0 or newResult < result:
+                    result = newResult
+                    offspringList[i] = newVar
+        bestOffspring = crossover(offspringList)
+        offspringList = [bestOffspring, bestOffspring]
+
+    return GenFunc(bestOffspring, num)
+
+
+def crossover(matrix):
+    offspring = []
+    for y in range(len(matrix[0])):
+        offspring.append((matrix[0][y] + matrix[1][y]) / 2)
+        
+    return offspring
         
     
 
