@@ -1,0 +1,21 @@
+class DecisionTree:
+    def train(self, training_set):
+        return training_set
+
+
+class NaiveBayes:
+    def train(self, training_set):
+        return training_set
+    
+
+class NearestNbr:
+    def train(self, training_set):
+        return training_set
+
+
+def main():
+
+    DT = DecisionTree()
+    print(DT.train([1, 2, 3])
+
+    return 0
