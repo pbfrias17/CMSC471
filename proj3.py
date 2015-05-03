@@ -51,7 +51,20 @@ class NaiveBayes:
         print(self.amount_of_ones)
 
         self.prob_one = self.amount_of_ones / self.total
-        print(self.prob_one)
+
+        #We will consider the amount of 1(s) in each vector
+        
+        self.ones_in_each = []
+        for vector in training_set:
+            ones = 0
+            for i in range(1, len(vector)):
+                ones += vector[i]
+            self.ones_in_each.append(ones)
+
+        print(self.ones_in_each)
+                
+                
+                
     
 
 class NearestNbr:
