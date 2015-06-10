@@ -139,6 +139,9 @@ def main():
         clone_set = data_set[:]
         print(clone_set, "classified as", DT.classify(data_set))
 
+    #now calculating probabilities
+    
+
     return 0
 
 main()
